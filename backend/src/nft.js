@@ -1,21 +1,27 @@
-const Web3 = require('web3');
-const abi = require('./abi/ERC721.json');
-const axios = require('axios');
-
+const { getTokenURI } = require('./middleware/web3');
+const DEFAULT_PROVIDER = ""
 exports.getNFT = async (req, res) => {
     // 1. grab provider
-    const { provider, tokenID } = req.body;
-    const web3 = new Web3(provider);
-    const contract = new web3.eth.Contract(abi, req.params.address);
-    await contract.methods.tokenURI(tokenID).call()
-        .then(async (response) => {
-            const data = await axios.get(response);
-            res.status(200).send(data.data);
-            return;
+    const address = req.params.address;
+    let { provider, tokenID } = req.body;
+    provider = provider ? provider : "https://cloudflare-eth.com";
+    if (tokenID < 0) {
+        return res.status(400).send({
+            status: 400,
+            message: "Error: negative tokenID"
+        });
+    }
+    return await getTokenURI({ address, tokenID, provider })
+        .then((response) => {
+            return res.status(response.status).send({
+                status: response.status,
+                data: response.data
+            });
         })
         .catch((err) => {
-            console.log(err.message);
-            res.status(404).send(err.message);
-            return;
-        });
+            return res.status(err.status | 400).send({
+                status: err.status | 400,
+                message: err.message
+            });
+        })
 }
