@@ -1,10 +1,10 @@
 const axios = require('axios');
-const Web3 = require('web3');
-const abi = require('./abi/ERC721.json');
+const abi = require('../abi/ERC721.json');
+const Contract = require('web3-eth-contract');
 
 exports.getTokenURI = async ({ address, tokenID, provider }) => {
-    const web3 = new Web3(provider);
-    const contract = new web3.eth.Contract(abi, address);
+    Contract.setProvider(provider);
+    const contract = new Contract(abi, address);
     const tokenURI = await contract.methods.tokenURI(tokenID).call()
         .catch((err) => {
             return Promise.reject({

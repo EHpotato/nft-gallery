@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "prestart": "docker-compose up -d",
     "start": "nodemon src/server.js",
     "lint": "./node_modules/.bin/eslint . --ext .js"
   },
