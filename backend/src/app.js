@@ -13,11 +13,11 @@ app.post('/auth', auth.authenticate);
 app.get('/:address', nft.getNFT);
 
 app.use((err, req, res, next) => {
-	res.status(err.status).json({
-		message: err.message,
-		errors: err.errors,
-		status: err.status,
-	});
+  res.status(err.status).json({
+    message: err.message,
+    errors: err.errors,
+    status: err.status,
+  });
 });
 
 module.exports = app;

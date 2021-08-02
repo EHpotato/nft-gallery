@@ -5,11 +5,7 @@
 	"scripts": {
 		"prestart": "docker-compose up -d",
 		"start": "nodemon src/server.js",
-<<<<<<< HEAD
-		"lint": "./node_modules/.bin/eslint . --ext .js",
-=======
 		"lint": "eslint . --ext .js --ignore-pattern 'node_modules'",
->>>>>>> main
 		"format": "prettier --write src/*.js"
 	},
 	"dependencies": {
