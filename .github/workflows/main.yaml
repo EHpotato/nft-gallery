@@ -1,5 +1,11 @@
 name: nft-gallery
 
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    
 jobs:
   static-analysis:
     runs-on: ubuntu:latest
