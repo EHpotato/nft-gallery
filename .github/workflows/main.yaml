@@ -12,6 +12,6 @@ jobs:
           node-version: 14.17.4
       - name: Install Dependencies
         run: yarn install --frozen-lockfile --cwd ./backend &&
-        yarn install --frozen-lockfile --cwd ./frontend
+          yarn install --frozen-lockfile --cwd ./frontend
       - name: Lint
         run: yarn --cwd ./backend lint && yarn --cwd ./frontend lint
