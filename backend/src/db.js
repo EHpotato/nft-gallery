@@ -19,8 +19,7 @@ exports.createUser = async (userinfo) => {
 };
 
 exports.selectUserByEmail = async (email) => {
-  const select = `SELECT userid, userinfo 
-  FROM users where userinfo->>'email' ~* $1`;
+  const select = `SELECT userid, userinfo FROM users where userinfo->>'email' ~* $1`;
   const query = {
     text: select,
     values: [email],
