@@ -8,5 +8,8 @@
     "start": "(npm run backend) & (npm run frontend)"
   },
   "author": "Ernesto Hernandez",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "react-router-dom": "^5.2.0"
+  }
 }
