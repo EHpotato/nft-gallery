@@ -1,5 +1,5 @@
 import './home.css';
-import NFT from '../nft/NFT';
+import NFT from '../nft/NFT.js';
 
 const Home = () => {
   return (

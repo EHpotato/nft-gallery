@@ -1,16 +1,14 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
+    // "env": {
+    //     "browser": true,
+    //     "es2021": true
+    // },
     "ignorePatterns": [
         "*.test.js", ".eslintrc.js",
     ],
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended",
         "plugin:prettier/recommended",
-        "plugin:jest/recommended",
         "prettier",
         "react-app",
     ],
@@ -32,9 +30,6 @@ module.exports = {
         "prettier"
     ],
     "rules": {
-        "react/react-in-jsx-scope": "off",
-        // allow jsx syntax in js files (for next.js project)
-        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "no-unused-vars": [
             "error",
             {
