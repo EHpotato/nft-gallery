@@ -5,7 +5,6 @@ exports.getNFT = async (req, res) => {
   let { provider, tokenID } = req.body;
   const data = await db.getTokenByContract(address, tokenID);
   if (data) {
-    console.log('asda');
     return res.status(200).send({
       status: 200,
       data: data,

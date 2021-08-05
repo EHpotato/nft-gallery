@@ -1,5 +1,5 @@
 DELETE FROM contracts;
-INSERT INTO contracts(address, tokens) VALUES('0xD4d871419714B778eBec2E22C7c53572b573706e', 
+INSERT INTO contracts(address, tokenID, tokens) VALUES('0xD4d871419714B778eBec2E22C7c53572b573706e', 1,
 '{"tokenID": 1,
   "data": {
     "name": "Stoner Cats #1",

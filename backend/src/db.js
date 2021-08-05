@@ -30,24 +30,24 @@ exports.selectUserByEmail = async (email) => {
 };
 
 exports.getTokenByContract = async (address, tokenID) => {
-  const select = `SELECT tokens FROM contracts WHERE address = $1 
-        AND tokens->>'tokenID' = $2`;
+  const select = `SELECT tokenURI FROM contracts WHERE address = $1 
+        AND tokenID = $2`;
   const query = {
     text: select,
     values: [address, tokenID],
   };
   const { rows } = await pool.query(query);
-  return rows.length > 0 ? rows[0].tokens.data : null;
+  return rows.length > 0 ? rows[0].tokenuri.data : null;
 };
 exports.insertToken = async (address, tokenID, data) => {
   const table = {
     tokenID: tokenID,
     data: data,
   };
-  const insert = `INSERT INTO contracts(address, tokens) VALUES($1, $2)`;
+  const insert = `INSERT INTO contracts(address, tokenID, tokenURI) VALUES($1, $2, $3)`;
   const query = {
     text: insert,
-    values: [address, table],
+    values: [address, tokenID, table],
   };
   await pool.query(query);
 };
