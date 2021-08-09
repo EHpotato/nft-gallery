@@ -2,6 +2,7 @@ const axios = require('axios');
 const abi = require('../abi/ERC721.json');
 const Contract = require('web3-eth-contract');
 const web3 = require('web3');
+const db = require('../db');
 
 const getTokenByIndex = async (contract, index) => {
   return await contract.methods
@@ -57,7 +58,7 @@ const batchRequests = async ({ requests, provider }) => {
   requests.map((request) => {
     let r = new Promise((resolve, reject) => {
       batch.add(
-        request.request({}, (err, resp) => {
+        request.func.request({}, (err, resp) => {
           if (err) return reject(-1);
           resolve(resp);
         })
@@ -70,24 +71,34 @@ const batchRequests = async ({ requests, provider }) => {
 };
 
 exports.getBatch = async (address, page, provider) => {
+  let response = [];
   Contract.setProvider(provider);
   const contract = new Contract(abi, address);
-
   const offset = page * 9 + 1;
+
   let requests = [];
   for (let i = offset; i < offset + 9; i++) {
     let request = contract.methods.tokenByIndex(i).call;
-    requests.push(request);
+    requests.push({ func: request });
   }
-  let responses = await batchRequests({ requests, provider });
+  const tokenIDs = await batchRequests({ requests, provider });
 
-  requests = responses.map((value) => {
-    if (value === -1) return;
-    return contract.methods.tokenURI(value).call;
+  requests = [];
+  for (const ID of tokenIDs) {
+    if (!ID) continue;
+    let data = await db.getTokenByContract(address, ID);
+    if (data) {
+      response.push({ tokenID: ID, tokenURI: data.image });
+    } else {
+      requests.push({ func: contract.methods.tokenURI(ID).call, id: ID });
+    }
+  }
+
+  const tokenURIs = await batchRequests({ requests, provider });
+
+  tokenURIs.forEach((value, index) => {
+    if (!tokenIDs[index]) return;
+    response.push({ tokenID: requests[index].id, tokenURI: value });
   });
-
-  responses = await batchRequests({ requests, provider });
-
-  console.log(responses);
-  return responses;
+  return response;
 };
