@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: false }));
 // Your routes go here
 app.post('/auth', auth.authenticate);
 app.get('/:address', nft.getNFT);
+app.get('/:address/:page', nft.getFeed);
 
 app.use((err, req, res, next) => {
   res.status(err.status).json({

@@ -1,8 +1,8 @@
-const { getTokenURI } = require('./middleware/web3');
+const { getTokenURI, getBatch } = require('./middleware/web3');
 const db = require('./db');
 exports.getNFT = async (req, res) => {
   const address = req.params.address;
-  let { provider, tokenID } = req.body;
+  let { provider, tokenID } = req.query;
   const data = await db.getTokenByContract(address, tokenID);
   if (data) {
     return res.status(200).send({
@@ -11,10 +11,10 @@ exports.getNFT = async (req, res) => {
     });
   }
   provider = provider ? provider : 'https://cloudflare-eth.com';
-  if (tokenID < 0) {
+  if (!tokenID || tokenID < 0) {
     return res.status(400).send({
       status: 400,
-      message: 'Error: negative tokenID',
+      message: 'Error: invalid/missing tokenID',
     });
   }
   return await getTokenURI({ address, tokenID, provider })
@@ -31,4 +31,15 @@ exports.getNFT = async (req, res) => {
         message: err.message,
       });
     });
+};
+
+exports.getFeed = async (req, resp) => {
+  const { address, page } = req.params;
+  const data = await getBatch(address, page, 'https://cloudflare-eth.com');
+
+  if (data) {
+    return resp.status(200).json(data);
+  } else {
+    return resp.status(400).send();
+  }
 };
