@@ -1,44 +1,32 @@
 const axios = require('axios');
 const abi = require('../abi/ERC721.json');
 const Contract = require('web3-eth-contract');
-const web3 = require('web3');
 const db = require('../db');
 
-const getTokenByIndex = async (contract, index) => {
-  return await contract.methods
-    .tokenByIndex(index)
-    .call()
-    .then((response) => {
-      return response;
-    })
-    .catch((err) => {
-      console.log(err.message);
-      return new Error('Token By Index Error: ' + err.message);
-    });
-};
-
 exports.getTokenURI = async ({ address, tokenID, provider }) => {
+  const data = await db.getTokenByID(address, tokenID);
+  if (data) {
+    return Promise.resolve({
+      status: 200,
+      data: data,
+    });
+  }
   Contract.setProvider(provider);
   const contract = new Contract(abi, address);
-  const tokenByIndex = await getTokenByIndex(contract, tokenID).catch((err) => {
-    return Promise.reject({
-      status: 400,
-      message: err.message,
-    });
-  });
   const tokenURI = await contract.methods
-    .tokenURI(tokenByIndex)
+    .tokenURI(tokenID)
     .call()
     .catch((err) => {
       console.log(err.message);
       return Promise.reject({
         status: 400,
-        message: 'Invalid contract address/tokenID',
+        message: 'Invalid contract address or tokenID',
       });
     });
   return await axios
     .get(tokenURI)
     .then((response) => {
+      db.insertByTokenID(address, tokenID, response.data);
       return Promise.resolve({
         status: 200,
         data: response.data,
@@ -52,53 +40,70 @@ exports.getTokenURI = async ({ address, tokenID, provider }) => {
     });
 };
 
-const batchRequests = async ({ requests, provider }) => {
-  const batch = new new web3(provider).BatchRequest();
-  let promises = [];
-  requests.map((request) => {
-    let r = new Promise((resolve, reject) => {
-      batch.add(
-        request.func.request({}, (err, resp) => {
-          if (err) return reject(-1);
-          resolve(resp);
-        })
-      );
+const getData = async (index, address, callback) => {
+  // TODO Implement DB get by index
+  const contract = new Contract(abi, address);
+  const existing = await db.getByIndex(address, index);
+  if (existing) {
+    // TODO: FIX THIS
+    callback({ tokenID: existing.tokenid, data: existing.tokenuri.data }, null);
+    return;
+  }
+  console.log(index);
+  const tokenID = await contract.methods
+    .tokenByIndex(index)
+    .call()
+    .catch(() => {
+      console.log('tokenID error');
+      return -1;
     });
-    promises.push(r);
-  });
-  await batch.execute();
-  return await Promise.all(promises);
+  if (tokenID == -1) {
+    return callback(null, 'Invalid Token ID');
+  }
+  const data = await db.getTokenByID(address, tokenID);
+  if (data) {
+    // TODO UPDATE TOKEN INDEX
+    await db.updateIndex(address, tokenID, index);
+    callback({ tokenID, data }, null);
+    return;
+  }
+  const tokenURI = await contract.methods
+    .tokenURI(tokenID)
+    .call()
+    .catch(() => {
+      console.log('tokenURI error');
+      return callback(null, 'Error getting tokenURI');
+    });
+  return await axios
+    .get(tokenURI)
+    .then((resp) => {
+      db.insertToken(address, tokenID, index, resp.data);
+      return callback({ tokenID: tokenID, data: resp.data }, null);
+    })
+    .catch((err) => {
+      console.log(err.message);
+      return callback(null, 'error axios');
+    });
 };
 
-exports.getBatch = async (address, page, provider) => {
-  let response = [];
+exports.batchFeed = async (address, page, provider) => {
   Contract.setProvider(provider);
-  const contract = new Contract(abi, address);
+  const indexes = [];
+  const promises = [];
   const offset = page * 9 + 1;
-
-  let requests = [];
   for (let i = offset; i < offset + 9; i++) {
-    let request = contract.methods.tokenByIndex(i).call;
-    requests.push({ func: request });
+    indexes.push(i);
   }
-  const tokenIDs = await batchRequests({ requests, provider });
-
-  requests = [];
-  for (const ID of tokenIDs) {
-    if (!ID) continue;
-    let data = await db.getTokenByContract(address, ID);
-    if (data) {
-      response.push({ tokenID: ID, tokenURI: data.image });
-    } else {
-      requests.push({ func: contract.methods.tokenURI(ID).call, id: ID });
-    }
-  }
-
-  const tokenURIs = await batchRequests({ requests, provider });
-
-  tokenURIs.forEach((value, index) => {
-    if (!tokenIDs[index]) return;
-    response.push({ tokenID: requests[index].id, tokenURI: value });
+  indexes.map((index) => {
+    promises.push(
+      new Promise((resolve, reject) => {
+        getData(index, address, (resp, err) => {
+          if (err) return reject(err);
+          resolve(resp);
+        });
+      })
+    );
   });
-  return response;
+  return Promise.allSettled(promises);
+  // return await Promise.all(promises);
 };

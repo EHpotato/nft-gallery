@@ -29,7 +29,7 @@ exports.selectUserByEmail = async (email) => {
   return rows.length > 0 ? { id: rows[0].userid, ...rows[0].userinfo } : null;
 };
 
-exports.getTokenByContract = async (address, tokenID) => {
+exports.getTokenByID = async (address, tokenID) => {
   const select = `SELECT tokenURI FROM contracts WHERE address = $1 
         AND tokenID = $2`;
   const query = {
@@ -39,15 +39,55 @@ exports.getTokenByContract = async (address, tokenID) => {
   const { rows } = await pool.query(query);
   return rows.length > 0 ? rows[0].tokenuri.data : null;
 };
-exports.insertToken = async (address, tokenID, data) => {
+
+exports.getByIndex = async (address, index) => {
+  const select = `SELECT * FROM contracts WHERE address = $1
+  AND tokenIndex = $2`;
+  const query = {
+    text: select,
+    values: [address, index],
+  };
+  const { rows } = await pool.query(query);
+  return rows.length > 0 ? rows[0] : null;
+};
+exports.insertByTokenID = async (address, tokenID, data) => {
   const table = {
     tokenID: tokenID,
     data: data,
   };
-  const insert = `INSERT INTO contracts(address, tokenID, tokenURI) VALUES($1, $2, $3)`;
+  const insert = `INSERT INTO contracts(address, tokenID, tokenURI) 
+    VALUES($1, $2, $3)
+    ON CONFLICT (address, tokenID) DO NOTHING;`;
   const query = {
     text: insert,
     values: [address, tokenID, table],
+  };
+  await pool.query(query);
+};
+
+exports.insertToken = async (address, tokenID, index, data) => {
+  const table = {
+    tokenID: tokenID,
+    data: data,
+  };
+  const update = `INSERT INTO contracts(address, tokenID, tokenIndex, tokenURI) 
+    VALUES ($1, $2, $3, $4)
+    ON CONFLICT (address, tokenID) DO UPDATE 
+    SET tokenIndex = excluded.tokenIndex;`;
+  const query = {
+    text: update,
+    values: [address, tokenID, index, table],
+  };
+  await pool.query(query);
+};
+
+exports.updateIndex = async (address, tokenID, index) => {
+  const update = `UPDATE contracts
+    SET tokenIndex = $1
+    WHERE address = $2 AND tokenID = $3`;
+  const query = {
+    text: update,
+    values: [index, address, tokenID],
   };
   await pool.query(query);
 };
