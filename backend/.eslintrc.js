@@ -10,7 +10,7 @@ module.exports = {
     "extends": ["plugin:prettier/recommended", "prettier", "eslint:recommended",],
     "plugins": ["prettier"],
     "ignorePatterns": [
-        "*.test.js", ".eslintrc.js",
+        "/tests/*", ".eslintrc.js",
     ],
     "rules": {
         "prettier/prettier": "error",

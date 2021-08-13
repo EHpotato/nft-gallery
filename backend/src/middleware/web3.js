@@ -49,12 +49,10 @@ const getData = async (index, address, callback) => {
     callback({ tokenID: existing.tokenid, data: existing.tokenuri.data }, null);
     return;
   }
-  console.log(index);
   const tokenID = await contract.methods
     .tokenByIndex(index)
     .call()
     .catch(() => {
-      console.log('tokenID error');
       return -1;
     });
   if (tokenID == -1) {
@@ -87,6 +85,7 @@ const getData = async (index, address, callback) => {
 };
 
 exports.batchFeed = async (address, page, provider) => {
+  if (page < 0) return Promise.reject('Error: invalid page(page >= 0)');
   Contract.setProvider(provider);
   const indexes = [];
   const promises = [];
