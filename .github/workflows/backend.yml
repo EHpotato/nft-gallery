@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 14.17.4
       - name: Install
-        run: yarn --cwd ./backend install
+        run: yarn install --frozen-lockfile --cwd ./backend
       - name: run tests
         run: |
           cd ./backend 
