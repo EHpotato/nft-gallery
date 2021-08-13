@@ -16,4 +16,6 @@ jobs:
         with:
           node-version: 14.17.4
       - name: run tests
-        run: yarn --cwd ./backend test
+        run: |
+          cd ./backend 
+          yarn test
