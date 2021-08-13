@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prestart": "docker compose up -d",
+    "prestart": "docker-compose up -d",
     "start": "nodemon --trace-warnings src/server.js",
     "lint": "eslint . --ext .js --ignore-pattern 'node_modules'",
     "format": "prettier --write src/*.js",
-    "pretest": "docker compose up -d",
+    "pretest": "docker-compose up -d",
     "test": "jest --runInBand --coverage --forceExit",
-    "posttest": "docker compose down"
+    "posttest": "docker-compose down"
   },
   "dependencies": {
     "axios": "^0.21.1",
