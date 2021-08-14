@@ -1,6 +1,6 @@
 ## NFT Gallery API
 
-![nft-gallery-api](https://github.com/Ernestohdz/nft-gallery/workflows/backend-tests/badge.svg)
+![nft-gallery-api](https://github.com/Ernestohdz/nft-gallery/workflows/nft-gallery-api/badge.svg)
 
 This directory contains the backend code for the backend APIs that
 our front end project needs.
@@ -106,7 +106,9 @@ Start project by running command `yarn start`
 ### Technologies
 
 - PostgreSQL
-- Noode.js
+- Node.js
 - Docker
 - ESlint
 - Prettier
+- Ethereum Blockchain
+- Web3
