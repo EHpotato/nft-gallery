@@ -5,21 +5,24 @@ exports.getNFT = async (req, res) => {
   provider = provider ? provider : 'https://cloudflare-eth.com';
   if (!tokenID || tokenID < 0) {
     return res.status(400).send({
-      status: 400,
-      message: 'Error: invalid/missing tokenID',
+      status: 'rejected',
+      raeson: 'Error: invalid/missing tokenID',
     });
   }
   return await getTokenURI({ address, tokenID, provider })
     .then((response) => {
       return res.status(response.status).send({
-        status: response.status,
-        data: response.data,
+        status: 'fulfilled',
+        value: {
+          tokenID: tokenID,
+          data: response.data,
+        },
       });
     })
     .catch((err) => {
       return res.status(err.status | 400).send({
-        status: err.status | 400,
-        message: err.message,
+        status: 'rejected',
+        reason: err.message,
       });
     });
 };
@@ -32,6 +35,9 @@ exports.getFeed = async (req, resp) => {
       return resp.status(200).json(data);
     })
     .catch((err) => {
-      return resp.status(400).send(err);
+      return resp.status(400).json({
+        status: 'rejected',
+        reason: err,
+      });
     });
 };
