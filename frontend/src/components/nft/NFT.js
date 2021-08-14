@@ -13,20 +13,14 @@ const NFT = () => {
 
   const getFeed = async (i, c) => {
     const addr = address[c];
-    const url = `${api_get}${addr}`;
+    const url = `${api_get}${addr}/${i}`;
     console.log(url);
     const data = await axios
-      .get(url, {
-        data: JSON.stringify({ tokenID: 10000 }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      .get(url)
       .then((response) => {
         console.log('here');
-        console.log(response);
-        console.log(response.data.data);
-        return [response.data.data, response.data.data, response.data.data];
+        console.log(response.data);
+        return response.data;
       })
       .catch((err) => {
         console.log(err.response);
@@ -48,20 +42,34 @@ const NFT = () => {
       {/* TODO: Might have to create separate component for images */}
       <div className="art-container">
         <p>Name of piece | (I) icon</p>
-        <img src={dev_url} alt="cat" width="100%" height="auto"></img>
         {data.map((entry, i) => {
+          if (entry.status === 'rejected') {
+            return (
+              <div>
+                <img src={dev_url} alt={i} height="auto"></img>
+              </div>
+            );
+          }
           return (
             <div id={i}>
               <img
-                src={entry.image}
-                alt={entry.name}
-                width="100%"
-                height="auto"
+                src={entry.value.data.image}
+                alt={entry.value.data.name}
+                width="50%"
+                height="10%"
               ></img>
             </div>
           );
         })}
       </div>
+      <button
+        onClick={() => {
+          setIndex(index + 1);
+          document.documentElement.scrollTop = 0;
+        }}
+      >
+        next
+      </button>
     </div>
   );
 };
