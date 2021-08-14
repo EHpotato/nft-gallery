@@ -1,23 +1,43 @@
-const Web3 = require('web3');
-const abi = require('./abi/ERC721.json');
-const axios = require('axios');
-
+const { getTokenURI, batchFeed } = require('./middleware/web3');
 exports.getNFT = async (req, res) => {
-  // 1. grab provider
-  const { provider, tokenID } = req.body;
-  const web3 = new Web3(provider);
-  const contract = new web3.eth.Contract(abi, req.params.address);
-  await contract.methods
-    .tokenURI(tokenID)
-    .call()
-    .then(async (response) => {
-      const data = await axios.get(response);
-      res.status(200).send(data.data);
-      return;
+  const address = req.params.address;
+  let { provider, tokenID } = req.query;
+  provider = provider ? provider : 'https://cloudflare-eth.com';
+  if (!tokenID || tokenID < 0) {
+    return res.status(400).send({
+      status: 'rejected',
+      reason: 'Error: invalid/missing tokenID',
+    });
+  }
+  return await getTokenURI({ address, tokenID, provider })
+    .then((response) => {
+      return res.status(response.status).send({
+        status: 'fulfilled',
+        value: {
+          tokenID: tokenID,
+          data: response.data,
+        },
+      });
     })
     .catch((err) => {
-      console.log(err.message);
-      res.status(404).send(err.message);
-      return;
+      return res.status(err.status | 400).send({
+        status: 'rejected',
+        reason: err.message,
+      });
+    });
+};
+
+exports.getFeed = async (req, resp) => {
+  const { address, page } = req.params;
+  // const data = await getBatch(address, page, 'https://cloudflare-eth.com');
+  return await batchFeed(address, page, 'https://cloudflare-eth.com')
+    .then((data) => {
+      return resp.status(200).json(data);
+    })
+    .catch((err) => {
+      return resp.status(400).json({
+        status: 'rejected',
+        reason: err,
+      });
     });
 };
