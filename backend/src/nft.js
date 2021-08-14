@@ -6,7 +6,7 @@ exports.getNFT = async (req, res) => {
   if (!tokenID || tokenID < 0) {
     return res.status(400).send({
       status: 'rejected',
-      raeson: 'Error: invalid/missing tokenID',
+      reason: 'Error: invalid/missing tokenID',
     });
   }
   return await getTokenURI({ address, tokenID, provider })

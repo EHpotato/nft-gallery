@@ -29,9 +29,9 @@ describe('GET /:address?tokenID={tokenID}', () => {
         .expect(200)
         .then((response) => {
             expect(response.body).toBeDefined();
-            expect(response.body.status).toEqual(200);
-            expect(response.body.data).toBeDefined();
-            expect(response.body.data.image).toBeDefined();
+            expect(response.body.status).toEqual('fulfilled');
+            expect(response.body.value.data).toBeDefined();
+            expect(response.body.value.data.image).toBeDefined();
         });
     });
     test('GET invalid tokenID', async () => {
@@ -39,7 +39,7 @@ describe('GET /:address?tokenID={tokenID}', () => {
         .expect(400)
         .then((response) => {
             expect(response.body).toBeDefined();
-            expect(response.body.message).toEqual('Error: invalid/missing tokenID');
+            expect(response.body.reason).toEqual('Error: invalid/missing tokenID');
         });
     });
     test('GET token not exists', async () => {
@@ -47,7 +47,7 @@ describe('GET /:address?tokenID={tokenID}', () => {
         .expect(400)
         .then((response) => {
             expect(response.body).toBeDefined();
-            expect(response.body.message).toEqual('Invalid contract address or tokenID');
+            expect(response.body.reason).toEqual('Invalid contract address or tokenID');
         });
     })
     test('GET token 0 twice', async () => {
@@ -55,17 +55,17 @@ describe('GET /:address?tokenID={tokenID}', () => {
         .expect(200)
         .then((response) => {
             expect(response.body).toBeDefined();
-            expect(response.body.status).toEqual(200);
-            expect(response.body.data).toBeDefined();
-            expect(response.body.data.image).toBeDefined();
+            expect(response.body.status).toEqual('fulfilled');
+            expect(response.body.value.data).toBeDefined();
+            expect(response.body.value.data.image).toBeDefined();
         });
         await request.get('/' + address + '?tokenID=0')
         .expect(200)
         .then((response) => {
             expect(response.body).toBeDefined();
-            expect(response.body.status).toEqual(200);
-            expect(response.body.data).toBeDefined();
-            expect(response.body.data.image).toBeDefined();
+            expect(response.body.status).toEqual('fulfilled');
+            expect(response.body.value.data).toBeDefined();
+            expect(response.body.value.data.image).toBeDefined();
         });
     })
 });
@@ -96,9 +96,9 @@ describe('GET /:address?tokenID then calling /:address/:page', () => {
         .expect(200)
         .then((response) => {
             expect(response.body).toBeDefined();
-            expect(response.body.status).toEqual(200);
-            expect(response.body.data).toBeDefined();
-            expect(response.body.data.image).toBeDefined();
+            expect(response.body.status).toEqual('fulfilled');
+            expect(response.body.value.data).toBeDefined();
+            expect(response.body.value.data.image).toBeDefined();
         });
         await request.get(`/${address}/5`)
         .expect(200)

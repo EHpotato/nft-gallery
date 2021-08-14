@@ -1,10 +1,27 @@
-## Implementations:
+## NFT Gallery API
+
+![nft-gallery-api](https://github.com/Ernestohdz/nft-gallery/workflows/backend-tests/badge.svg)
+
+This directory contains the backend code for the backend APIs that
+our front end project needs.
+
+## Implementations
 
 - Created two endpoints for API
 - Added tests
 - Added new PostgreSQL schema
 - workflow for testing API
 - Storing previous seen NFTs
+
+## Installation
+
+Requirements:
+
+- Docker
+- Node.js v14
+
+Install dependencies by running command `yarn`.
+Start project by running command `yarn start`
 
 ### API Endpoints
 
@@ -85,3 +102,11 @@
 #### Storing previous seen NFTs
 
 - A problem with reading from the Ethereum blockchain is how slow it is. To help solve this problem, we store previously seen NFTs in our database. This way we don't spend unnecessary time grabbing the same information over and over again, giving bad performance.
+
+### Technologies
+
+- PostgreSQL
+- Noode.js
+- Docker
+- ESlint
+- Prettier
