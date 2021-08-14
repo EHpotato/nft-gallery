@@ -1,4 +1,4 @@
-name: backend-tests
+name: nft-gallery-api
 
 env:
   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
