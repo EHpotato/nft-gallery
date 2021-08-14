@@ -1,23 +1,16 @@
-import { useEffect, useState } from 'react';
-import address from './nfts.js';
 import './Collections.css';
 // TEMPORARY USE ENV VARIABLE
 
-const Collections = () => {
-  const [token, setToken] = useState('Stoner Cats');
-
-  useEffect(() => {
-    console.log(address['Stoner Cats']);
-  });
-
+const Collections = ({ props }) => {
+  const { collection, setCollection } = props;
   const handleButton = (event) => {
     console.log(event);
-    setToken('Stoner Cats');
+    setCollection('Stoner Cats');
   };
   return (
     <nav className="collectionsNav">
       <button onClick={handleButton}></button>
-      <div>{token}</div>
+      <div>{collection}</div>
       <button></button>
     </nav>
   );
