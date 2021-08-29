@@ -12,7 +12,6 @@ const Home = () => {
       <main className="main">
         <NFT />
       </main>
-      <aside></aside>
     </div>
   );
 };

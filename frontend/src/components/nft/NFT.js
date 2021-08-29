@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
+import ArtFrame from '../ArtFrame/ArtFrame';
 import Collections from '../collections/Collections';
 import address from '../collections/nfts.js';
 import axios from 'axios';
 
-const dev_url = 'https://go.fission.app/json/3/image.jpg';
+// const dev_url = 'https://go.fission.app/json/3/image.jpg';
 const api_get = 'http://localhost:3010/';
 
 const NFT = () => {
   const [collection, setCollection] = useState('Stoner Cats');
-  const [index, setIndex] = useState(1);
+  const [page, setIndex] = useState(1);
   const [data, setData] = useState([]);
 
   const getFeed = async (i, c) => {
@@ -30,8 +31,8 @@ const NFT = () => {
     setData(data);
   };
   const g = useCallback(() => {
-    return getFeed(index, collection);
-  }, [index, collection]);
+    return getFeed(page, collection);
+  }, [page, collection]);
 
   useEffect(() => {
     g();
@@ -39,32 +40,14 @@ const NFT = () => {
   return (
     <div>
       <Collections props={{ collection, setCollection, setIndex }} />
-      {/* TODO: Might have to create separate component for images */}
-      <div className="art-container">
-        <p>Name of piece | (I) icon</p>
+      <div className="arts-container">
         {data.map((entry, i) => {
-          if (entry.status === 'rejected') {
-            return (
-              <div>
-                <img src={dev_url} alt={i} height="auto"></img>
-              </div>
-            );
-          }
-          return (
-            <div id={i}>
-              <img
-                src={entry.value.data.image}
-                alt={entry.value.data.name}
-                width="50%"
-                height="10%"
-              ></img>
-            </div>
-          );
+          return <ArtFrame data={entry} index={i} page={page} />;
         })}
       </div>
       <button
         onClick={() => {
-          setIndex(index + 1);
+          setIndex(page + 1);
           document.documentElement.scrollTop = 0;
         }}
       >

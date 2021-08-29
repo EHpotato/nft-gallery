@@ -5,7 +5,7 @@ const Collections = ({ props }) => {
   const { collection, setCollection } = props;
   const handleButton = (event) => {
     console.log(event);
-    setCollection('Stoner Cats');
+    setCollection('Collection Name Here');
   };
   return (
     <nav className="collectionsNav">
