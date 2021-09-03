@@ -9,13 +9,30 @@ const ArtFrame = ({ data, index, page }) => {
       );
     } else {
       return (
-        <div>
-          <p>{data.value.data.name}</p>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            minWidth: 0,
+          }}
+        >
+          <p
+            style={{
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              height: '28px',
+            }}
+          >
+            {data.value.data.name}
+          </p>
           <img
             src={data.value.data.image}
             alt={data.value.data.name}
-            width="70%"
-            height="auto"
+            style={{
+              flex: '1 1 auto',
+            }}
           />
         </div>
       );
