@@ -1,5 +1,5 @@
 import './home.css';
-import NFT from '../nft/NFT';
+import Content from '../Content/Content';
 
 const Home = () => {
   return (
@@ -10,7 +10,7 @@ const Home = () => {
         <div>Option 2</div>
       </nav>
       <main className="main">
-        <NFT />
+        <Content />
       </main>
     </div>
   );

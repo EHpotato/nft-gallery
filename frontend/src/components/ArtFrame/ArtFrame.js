@@ -9,13 +9,13 @@ const ArtFrame = ({ data, index, page }) => {
       );
     } else {
       return (
-        <div style={{ width: '70%', margin: 'auto' }}>
+        <div>
           <p>{data.value.data.name}</p>
           <img
             src={data.value.data.image}
             alt={data.value.data.name}
-            width="50%"
-            height="15%"
+            width="70%"
+            height="auto"
           />
         </div>
       );

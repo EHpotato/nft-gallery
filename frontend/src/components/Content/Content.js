@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import ArtFrame from '../ArtFrame/ArtFrame';
-import Collections from '../collections/Collections';
-import address from '../collections/nfts.js';
+import Collections from '../Collections/Collections';
+import address from '../Addresses.js';
 import axios from 'axios';
+import './Content.css';
 
 // const dev_url = 'https://go.fission.app/json/3/image.jpg';
 const api_get = 'http://localhost:3010/';
 
-const NFT = () => {
+const Content = () => {
   const [collection, setCollection] = useState('Stoner Cats');
   const [page, setIndex] = useState(1);
   const [data, setData] = useState([]);
@@ -47,6 +48,15 @@ const NFT = () => {
       </div>
       <button
         onClick={() => {
+          setIndex(page - 1);
+          document.documentElement.scrolltop = 0;
+        }}
+        disabled={page === 1}
+      >
+        prev
+      </button>
+      <button
+        onClick={() => {
           setIndex(page + 1);
           document.documentElement.scrollTop = 0;
         }}
@@ -57,4 +67,4 @@ const NFT = () => {
   );
 };
 
-export default NFT;
+export default Content;
