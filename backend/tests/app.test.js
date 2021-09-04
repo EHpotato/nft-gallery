@@ -47,7 +47,7 @@ describe('GET /:address?tokenID={tokenID}', () => {
         .expect(400)
         .then((response) => {
             expect(response.body).toBeDefined();
-            expect(response.body.reason).toEqual('Invalid contract address or tokenID');
+            expect(response.body.reason).toEqual('Returned error: execution reverted: ERC721Metadata: URI query for nonexistent token');
         });
     })
     test('GET token 0 twice', async () => {
