@@ -1,15 +1,15 @@
 const { getTokenURI, batchFeed } = require('./middleware/web3');
+
 exports.getNFT = async (req, res) => {
   const address = req.params.address;
-  let { provider, tokenID } = req.query;
-  provider = provider ? provider : 'https://cloudflare-eth.com';
+  let { tokenID } = req.query;
   if (!tokenID || tokenID < 0) {
     return res.status(400).send({
       status: 'rejected',
       reason: 'Error: invalid/missing tokenID',
     });
   }
-  return await getTokenURI({ address, tokenID, provider })
+  return await getTokenURI(address, tokenID)
     .then((response) => {
       return res.status(response.status).send({
         status: 'fulfilled',
