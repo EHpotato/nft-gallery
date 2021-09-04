@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import ArtFrame from '../ArtFrame/ArtFrame';
 import Collections from '../Collections/Collections';
-import address from '../Addresses.js';
+import address from '../addresses.js';
 import axios from 'axios';
 import './Content.css';
 
