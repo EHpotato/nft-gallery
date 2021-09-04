@@ -3,7 +3,9 @@ const abi = require('../abi/ERC721.json');
 const Contract = require('web3-eth-contract');
 const db = require('../db');
 
-exports.getTokenURI = async ({ address, tokenID, provider }) => {
+const provider = 'https://cloudflare-eth.com';
+
+exports.getTokenURI = async (address, tokenID) => {
   const data = await db.getTokenByID(address, tokenID);
   if (data) {
     return Promise.resolve({
@@ -17,10 +19,9 @@ exports.getTokenURI = async ({ address, tokenID, provider }) => {
     .tokenURI(tokenID)
     .call()
     .catch((err) => {
-      console.log(err.message);
       return Promise.reject({
         status: 400,
-        message: 'Invalid contract address or tokenID',
+        message: err.message,
       });
     });
   return await axios
@@ -84,12 +85,12 @@ const getData = async (index, address, callback) => {
     });
 };
 
-exports.batchFeed = async (address, page, provider) => {
+exports.batchFeed = async (address, page) => {
   if (page < 0) return Promise.reject('Error: invalid page(page >= 0)');
   Contract.setProvider(provider);
   const indexes = [];
   const promises = [];
-  const offset = page * 9 + 1;
+  const offset = page * 9;
   for (let i = offset; i < offset + 9; i++) {
     indexes.push(i);
   }
