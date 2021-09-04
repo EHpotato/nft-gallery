@@ -4,7 +4,9 @@ import Content from '../Content/Content';
 const Home = () => {
   return (
     <div className="container">
-      <header>HEADER</header>
+      <header>
+        <p style={{ marginLeft: '25px' }}>NFT Gallery</p>
+      </header>
       <nav>
         <div>Option 1</div>
         <div>Option 2</div>

@@ -1,5 +1,6 @@
 .arts-container {
   display: grid;
+  margin-right: 1em;
   grid-auto-columns: minmax(15rem, auto);
   grid-template-columns: repeat(3, 1fr);
   max-height: 100%;

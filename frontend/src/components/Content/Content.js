@@ -5,16 +5,16 @@ import address from '../Addresses.js';
 import axios from 'axios';
 import './Content.css';
 
-// const dev_url = 'https://go.fission.app/json/3/image.jpg';
 const api_get = 'http://localhost:3010/';
 
 const Content = () => {
-  const [collection, setCollection] = useState('Stoner Cats');
-  const [page, setIndex] = useState(1);
+  const [collection, setCollection] = useState(0);
+
+  const [page, setIndex] = useState(0);
   const [data, setData] = useState([]);
 
   const getFeed = async (i, c) => {
-    const addr = address[c];
+    const addr = address[c][1];
     const url = `${api_get}${addr}/${i}`;
     console.log(url);
     const data = await axios
@@ -37,7 +37,7 @@ const Content = () => {
 
   useEffect(() => {
     g();
-  }, [g]);
+  }, [g, collection]);
   return (
     <div>
       <Collections props={{ collection, setCollection, setIndex }} />
@@ -51,7 +51,7 @@ const Content = () => {
           setIndex(page - 1);
           document.documentElement.scrolltop = 0;
         }}
-        disabled={page === 1}
+        disabled={page === 0}
       >
         prev
       </button>

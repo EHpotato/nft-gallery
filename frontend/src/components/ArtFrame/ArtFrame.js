@@ -1,4 +1,6 @@
-const ArtFrame = ({ data, index, page }) => {
+import fallBack from '../../placeholder.png';
+
+const ArtFrame = ({ data }) => {
   const displayImage = (data) => {
     if (data.status === 'rejected') {
       return (
@@ -30,6 +32,11 @@ const ArtFrame = ({ data, index, page }) => {
           <img
             src={data.value.data.image}
             alt={data.value.data.name}
+            loading="lazy"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = fallBack;
+            }}
             style={{
               flex: '1 1 auto',
             }}
@@ -38,8 +45,6 @@ const ArtFrame = ({ data, index, page }) => {
       );
     }
   };
-  console.log(index);
-  console.log(page);
   return displayImage(data);
 };
 
