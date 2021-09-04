@@ -1,4 +1,4 @@
-import './home.css';
+import './Home.css';
 import Content from '../Content/Content';
 
 const Home = () => {
